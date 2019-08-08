@@ -2,7 +2,7 @@ import java.util.Random;
 
 public class OraRandom {
 	static int randomSkewInt(int a) {
-		return Math.abs(Math.round((new Random().nextInt()/(new Random().nextInt()/7))%a)); //increasing 7 reduces the skew.
+		return Math.abs(Math.round((new Random().nextInt()/(new Random().nextInt()/4))%a)); //increasing 7 reduces the skew.
 	}
 	
 	static int randomUniformInt(int a) {

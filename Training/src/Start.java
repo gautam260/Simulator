@@ -2,7 +2,7 @@
 
 public class Start {
 	public static void main(String[] args) {
-		new SelectLoad().run();
+		new DataLoad().run();
 		
 	}
 }

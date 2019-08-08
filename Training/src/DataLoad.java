@@ -17,18 +17,17 @@ public class DataLoad {
 				Connection oraCon = DBConnection.getOraConn();
 				if (oraCon!=null) {
 					System.out.println(Thread.currentThread().getName() + " ----> Starting");
-					PreparedStatement pstmt = oraCon.prepareStatement("insert into temp(roll,dept_id,year,sem_id,subject_id,mark1,mark2,mark3,finalmark) values (?,?,?,?,?,?,?,?,?)");
+					PreparedStatement pstmt = oraCon.prepareStatement("insert into temp(t1,t2,t3,t4,t5,t6,t7) values (?,?,?,?,?,?,?)");
 					int i = 1;
 					while (i < 10000000) {
 						pstmt.setInt(1,oraSequence.nextVal() );
-						pstmt.setInt(2, OraRandom.randomSkewInt(8));
-						pstmt.setInt(3, OraRandom.randomSkewInt(4));
-						pstmt.setInt(4, OraRandom.randomSkewInt(8));
-						pstmt.setInt(5, OraRandom.randomSkewInt(48));
-						pstmt.setInt(6, OraRandom.randomSkewInt(100));
-						pstmt.setInt(7, OraRandom.randomSkewInt(100));
-						pstmt.setInt(8, OraRandom.randomSkewInt(100));
-						pstmt.setInt(9, OraRandom.randomSkewInt(100));
+						pstmt.setInt(2, OraRandom.randomSkewInt(500));
+						pstmt.setInt(3, OraRandom.randomSkewInt(500));
+						pstmt.setInt(4, OraRandom.randomSkewInt(500));
+						pstmt.setInt(5, OraRandom.randomSkewInt(500));
+						pstmt.setInt(6, OraRandom.randomSkewInt(500));
+						pstmt.setString(7, OraRandom.randomString(200));
+						
 						pstmt.addBatch();
 						if (i%10000 == 0) {
 							pstmt.executeBatch();
