@@ -21,7 +21,7 @@ class Table {
 		if (CheckTable()) {
 			if (oracon!=null) {
 				try {
-					PreparedStatement pstmt = oracon.prepareStatement("select column_name,data_type,data_lenght from dba_tab_columns where owner=? and table_name=?");
+					PreparedStatement pstmt = oracon.prepareStatement("select column_name,data_type,data_length from dba_tab_columns where owner=? and table_name=?");
 					pstmt.setString(1, OWNER);
 					pstmt.setString(2, TABLE_NAME);
 					
