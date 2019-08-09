@@ -17,20 +17,11 @@ public class SelectLoad {
 			try {
 				System.out.println("Select Load --> " +Thread.currentThread().getName() + " --- Started");
 				Connection oraCon = DBConnection.getOraConn();
-<<<<<<< HEAD
 				PreparedStatement pstmt = oraCon.prepareStatement("select sum(t4) from temp2 where t6=?");
-=======
-				PreparedStatement pstmt = oraCon.prepareStatement("select avg(totalmarks) from temp where roll < ?");
->>>>>>> branch 'master' of https://github.com/vishnusivathej/Simulator.git
 				int i = 0 ;
-<<<<<<< HEAD
 				while (i< 100000) {
 					pstmt.setInt(1, OraRandom.randomSkewInt(1000));
 					
-=======
-				while (i< 1000000) {
-					pstmt.setInt(1, OraRandom.randomSkewInt(6000));
->>>>>>> branch 'master' of https://github.com/vishnusivathej/Simulator.git
 					ResultSet rs = pstmt.executeQuery();
 					while(rs.next()) {
 						rs.getInt(1);
