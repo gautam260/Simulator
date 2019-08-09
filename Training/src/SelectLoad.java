@@ -17,11 +17,10 @@ public class SelectLoad {
 			try {
 				System.out.println("Select Load --> " +Thread.currentThread().getName() + " --- Started");
 				Connection oraCon = DBConnection.getOraConn();
-				PreparedStatement pstmt = oraCon.prepareStatement("select avg(mark3) from temp where sem_id=?  and finalmark=?");
+				PreparedStatement pstmt = oraCon.prepareStatement("select avg(totalmarks) from temp where roll < ?");
 				int i = 0 ;
-				while (i< 1000) {
-					pstmt.setInt(1, OraRandom.randomSkewInt(8));
-					pstmt.setInt(3, OraRandom.randomSkewInt(100));
+				while (i< 1000000) {
+					pstmt.setInt(1, OraRandom.randomSkewInt(6000));
 					ResultSet rs = pstmt.executeQuery();
 					while(rs.next()) {
 						rs.getInt(1);
