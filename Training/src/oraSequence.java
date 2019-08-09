@@ -5,4 +5,7 @@ public class oraSequence {
 		value++;
 		return value;
 	}
+	synchronized static int getval() {
+		return value;
+	}
 }

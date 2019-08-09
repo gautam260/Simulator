@@ -6,8 +6,8 @@ import java.util.concurrent.Executors;
 public class DataLoad {
 	
 	void run() {
-		ExecutorService asd = Executors.newFixedThreadPool(10);
-		for (int i = 0 ; i < 10; i++)
+		ExecutorService asd = Executors.newFixedThreadPool(30);
+		for (int i = 0 ; i < 30; i++)
 			asd.submit(new Loader());
 		asd.shutdown();
 	}
@@ -21,17 +21,17 @@ public class DataLoad {
 					int i = 1;
 					while (i < 10000000) {
 						pstmt.setInt(1,oraSequence.nextVal() );
-						pstmt.setInt(2, OraRandom.randomSkewInt(500));
-						pstmt.setInt(3, OraRandom.randomSkewInt(500));
-						pstmt.setInt(4, OraRandom.randomSkewInt(500));
-						pstmt.setInt(5, OraRandom.randomSkewInt(500));
-						pstmt.setInt(6, OraRandom.randomSkewInt(500));
+						pstmt.setInt(2, OraRandom.randomSkewInt(100));
+						pstmt.setInt(3, OraRandom.randomSkewInt(200));
+						pstmt.setInt(4, OraRandom.randomSkewInt(400));
+						pstmt.setInt(5, OraRandom.randomSkewInt(600));
+						pstmt.setInt(6, OraRandom.randomSkewInt(1000));
 						pstmt.setString(7, OraRandom.randomString(200));
 						
 						pstmt.addBatch();
 						if (i%10000 == 0) {
 							pstmt.executeBatch();
-							System.out.println(Thread.currentThread().getName() + " ----  inserted ---- " + i + " rows");
+							System.out.println("Total inserted ---- " + oraSequence.getval() + " rows");
 						}
 						i++;
 					}
