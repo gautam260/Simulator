@@ -17,7 +17,7 @@ public class HugePages {
 			catch(Exception E) {
 				
 			}
-			String SQL = " create table HugePages (roll number, details varchar2(200)) storage (buffer_pool keep)";
+			String SQL = " create table HugePages (roll number, details varchar2(3800)) ";
 			stmt.execute(SQL);
 			SQL = "create index idx on HugePages(roll) storage (buffer_pool keep)";
 			stmt.execute(SQL);
@@ -30,16 +30,12 @@ public class HugePages {
 			}
 			i = 0 ;
 			Thread.currentThread().sleep(5000);
-			while (i < 20) {
+			while (i < 2) {
 				asd.submit(new DeleteLoad());
 				asd.submit(new UpdateLoad());
 				i++;
 			}
-			i = 0 ;
-			while (i < 200) {
-				asd.submit(new SelectLoad());
-				i++;
-			}
+			
 			
 		}
 		catch(Exception E) {
@@ -58,8 +54,11 @@ public class HugePages {
 				int i = 0;
 				while (i < 1000000) {
 					pstmt.setInt(1 , oraSequence.nextVal());
-					pstmt.setString(2, OraRandom.randomString(200));
-					pstmt.executeUpdate();
+					pstmt.setString(2, OraRandom.randomString(3800));
+					pstmt.addBatch();
+					if (i%10 == 0) {
+						pstmt.executeBatch();
+					}
 					i++;
 				}
 				pstmt.close();
@@ -79,7 +78,7 @@ public class HugePages {
 				int i = 0;
 				while (i < 1000000) {
 					pstmt.setInt(2 , OraRandom.randomUniformInt(oraSequence.getval()));
-					pstmt.setString(1, OraRandom.randomString(200));
+					pstmt.setString(1, OraRandom.randomString(3800));
 					pstmt.executeUpdate();
 					i++;
 				}
