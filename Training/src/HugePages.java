@@ -1,30 +1,140 @@
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class HugePages {
 	void createTable() {
 		try {
 			Connection oraCon = DBConnection.getOraConn();
-			String SQL = " create table cached (roll number, details varchar2(6000)) storage (buffer_pool keep)";
 			Statement stmt = oraCon.createStatement();
+			try {
+				String SQL = "drop table HugePages";
+				stmt.execute(SQL);
+			}
+			catch(Exception E) {
+				
+			}
+			String SQL = " create table HugePages (roll number, details varchar2(200)) storage (buffer_pool keep)";
 			stmt.execute(SQL);
-			PreparedStatement pstmt = oraCon.prepareStatement("Insert into cached (roll,details) values (?,?)");
-			int i = 0 ;
-			System.out.println("loading data");
-			while (i < 8388608) {
-				pstmt.setInt(1, oraSequence.nextVal());
-				pstmt.setString(2, OraRandom.randomString(6000));
-				pstmt.addBatch();
-				if (i %100000 == 0)
-					pstmt.executeBatch();
+			SQL = "create index idx on HugePages(roll) storage (buffer_pool keep)";
+			stmt.execute(SQL);
+			System.out.println("Created Tables and indexes, Starting Load");
+			ExecutorService asd = Executors.newFixedThreadPool(400);
+			int i = 0;
+			while (i < 150) {
+				asd.submit(new InsertLoad());
 				i++;
 			}
-			pstmt.executeBatch();
-			System.out.println("loaded data");
+			i = 0 ;
+			Thread.currentThread().sleep(5000);
+			while (i < 20) {
+				asd.submit(new DeleteLoad());
+				asd.submit(new UpdateLoad());
+				i++;
+			}
+			i = 0 ;
+			while (i < 200) {
+				asd.submit(new SelectLoad());
+				i++;
+			}
+			
 		}
 		catch(Exception E) {
 			E.printStackTrace();
 		}
+	}
+	void PageTable() {
+		
+	}
+	class InsertLoad implements Runnable{
+		public void run() {
+			try {
+				System.out.println("Staring Insert Thread -->" + Thread.currentThread().getName());
+				Connection oraCon = DBConnection.getOraConn();
+				PreparedStatement pstmt = oraCon.prepareStatement("insert into HugePages (roll, details) values (?,?)");
+				int i = 0;
+				while (i < 1000000) {
+					pstmt.setInt(1 , oraSequence.nextVal());
+					pstmt.setString(2, OraRandom.randomString(200));
+					pstmt.executeUpdate();
+					i++;
+				}
+				pstmt.close();
+			}
+			catch(Exception E) {
+				E.printStackTrace();
+			}
+		}
+		
+	}
+	class UpdateLoad implements Runnable{
+		public void run() {
+			try {
+				System.out.println("Staring Update Thread -->" + Thread.currentThread().getName());
+				Connection oraCon = DBConnection.getOraConn();
+				PreparedStatement pstmt = oraCon.prepareStatement("Update HugePages set details = ? where roll = ? ");
+				int i = 0;
+				while (i < 1000000) {
+					pstmt.setInt(2 , OraRandom.randomUniformInt(oraSequence.getval()));
+					pstmt.setString(1, OraRandom.randomString(200));
+					pstmt.executeUpdate();
+					i++;
+				}
+				pstmt.close();
+			}
+			catch(Exception E) {
+				E.printStackTrace();
+			}
+		}
+	}
+	class SelectLoad implements Runnable{
+		public void run() {
+			try {
+				System.out.println("Staring Select  Thread -->" + Thread.currentThread().getName());
+				Connection oraCon = DBConnection.getOraConn();
+				PreparedStatement pstmt = oraCon.prepareStatement("select count(details) from  HugePages ");
+				int i = 0;
+				while (i < 1000000) {
+				
+					ResultSet rs = pstmt.executeQuery();
+					while(rs.next()) {
+						rs.getString(1);
+					}
+					i++;
+				}
+				pstmt.close();
+			}
+			catch(Exception E) {
+				E.printStackTrace();
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	class DeleteLoad implements Runnable{
+		public void run() {
+			try {
+				System.out.println("Staring Delete Thread -->" + Thread.currentThread().getName());
+				Connection oraCon = DBConnection.getOraConn();
+				PreparedStatement pstmt = oraCon.prepareStatement("delete from HugePages where roll = ? ");
+				int i = 0;
+				while (i < 1000000) {
+					pstmt.setInt(1 , OraRandom.randomUniformInt(oraSequence.getval()));
+					pstmt.executeUpdate();
+					i++;
+				}
+				pstmt.close();
+			}
+			catch(Exception E) {
+				E.printStackTrace();
+			}
+		}
+		
 	}
 }
