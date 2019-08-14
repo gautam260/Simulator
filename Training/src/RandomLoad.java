@@ -19,17 +19,17 @@ public class RandomLoad {
 			}
 			String SQL = " create table RandomLoad (roll number, name varchar2(20), mark1 number, mark2 number, mark3 number) ";
 			stmt.execute(SQL);
-			SQL = "create index RandomLoad_idx on RandomLoad(roll) ";
-			stmt.execute(SQL);
+			//SQL = "create index RandomLoad_idx on RandomLoad(roll) ";
+			//stmt.execute(SQL);
 			System.out.println("Created Tables and indexes, Starting Load");
 			ExecutorService asd = Executors.newFixedThreadPool(400);
 			int i = 0;
-			while (i < 5) {
+			while (i < 30) {
 				asd.submit(new InsertLoad());
 				i++;
 			}
 			i = 0 ;
-			System.out.println("Loading Data... Sleepin for 10 seconds");
+			/*System.out.println("Loading Data... Sleepin for 10 seconds");
 			Thread.currentThread().sleep(10000);
 			while (i < 5) {
 				asd.submit(new DeleteLoad());
@@ -40,7 +40,7 @@ public class RandomLoad {
 				asd.submit(new SelectLoad());
 				i++;
 			}
-			
+			*/
 			
 			
 		}
@@ -66,7 +66,7 @@ public class RandomLoad {
 					pstmt.setInt(5, OraRandom.randomUniformInt(100));
 					
 					pstmt.addBatch();
-					if (i%10 == 0) {
+					if (i%10000 == 0) {
 						pstmt.executeBatch();
 					}
 					i++;
