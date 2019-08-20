@@ -66,8 +66,9 @@ public class RandomLoad {
 					pstmt.setInt(5, OraRandom.randomUniformInt(100));
 					
 					pstmt.addBatch();
-					if (i%10000 == 0) {
+					if (i%100000 == 0) {
 						pstmt.executeBatch();
+						System.out.println("loaded " + oraSequence.getval());
 					}
 					i++;
 				}
