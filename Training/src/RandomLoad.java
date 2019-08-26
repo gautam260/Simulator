@@ -17,7 +17,7 @@ public class RandomLoad {
 			catch(Exception E) {
 				
 			}
-			String SQL = " create table RandomLoad (roll number, name varchar2(20), mark1 number, mark2 number, mark3 number) ";
+			String SQL = "  create table randomload (roll number, name varchar2(20), mark1 number, mark2 number, mark3 number) ";
 			stmt.execute(SQL);
 			//SQL = "create index RandomLoad_idx on RandomLoad(roll) ";
 			//stmt.execute(SQL);

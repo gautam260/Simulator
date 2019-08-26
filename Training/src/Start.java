@@ -2,7 +2,7 @@
 
 public class Start {
 	public static void main(String[] args) throws InterruptedException {
-		LibraryCacheLock a = new LibraryCacheLock();
-		a.HardParse();
+		BufferCache a = new BufferCache();
+		a.checkWorkingSet();
 	}
 }

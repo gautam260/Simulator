@@ -21,6 +21,77 @@ public class BufferCache {
 			asd.submit(new BufferPinTest());
 		}
 	}
+	
+	void findBlockPost(int file, int block) {
+		try {
+			Connection oraCon = DBConnection.getOraSysCon();
+			Statement stmt = oraCon.createStatement();
+			String SQL = "select NXT_REPL,NXT_REPLAX,COLD_HD From X$KCBWDS where CNUM_SET > 1";
+			ResultSet Rs = stmt.executeQuery(SQL);
+			String MainQueueStart = null;
+			String AuxQueueStart = null;
+			String MidPoint;
+			while (Rs.next()) {
+				MainQueueStart = Rs.getString(1);
+				AuxQueueStart = Rs.getString(2);
+				MidPoint = Rs.getString(3);
+			}
+			HashMap<String,String> MainQueue  = new HashMap<String,String>();
+			HashMap<String,String> wholeQueue = new HashMap<>();
+			System.out.println("printing Blocks current States");
+			SQL = "select prv_repl,nxt_repl, hladdr, tch,decode(state,0,'free',1,'xcur',2,'scur',3,'cr', 4,'read',5,'mrec',6,'irec',7,'write',8,'pi', 9,'memory',10,'mwrite',11,'donated', 12,'protected',  13,'securefile', 14,'siop',15,'recckpt', 16, 'flashfree',  17, 'flashcur', 18, 'flashna') STATE from x$bh where DBABLK="+block +" and DBARFIL=" + file;
+			Rs = stmt.executeQuery(SQL);
+			while (Rs.next()) {
+				System.out.println("PREV==>" + Rs.getString(1) + " NXT==>" + Rs.getString(2) + "  LATCH==>" + Rs.getString(3) + " TCH_COUNT==>" + Rs.getInt(4) + " State==>" + Rs.getString(5));
+			}
+			System.out.println("Getting Current Position ");
+			SQL = "select nxt_repl from x$bh where DBABLK=" + block + " and DBARFIL=" + file  + " and state = 1";
+			Rs = stmt.executeQuery(SQL);
+			String BLKPOS="" ;
+			while (Rs.next()) {
+				BLKPOS = Rs.getString(1);
+			}
+			System.out.println("Current pointer --> " + BLKPOS);
+			SQL="select prv_repl,nxt_repl from x$bh";
+			Rs = stmt.executeQuery(SQL);
+			Rs.setFetchSize(100000);
+			while (Rs.next()) {
+				wholeQueue.put(Rs.getString(1),Rs.getString(2));
+			}
+			System.out.println("Total Blocks in WorkingSet " + wholeQueue.size() );
+		//	
+			int pos = 0;
+			String temp = MainQueueStart;
+			while (temp!=wholeQueue.get(temp)) {
+				pos++;
+				if (temp.equals(BLKPOS)) {
+					System.out.println("Position in the Main LRU workingSet " + pos);
+					break;
+				}
+				temp = wholeQueue.get(temp);
+			}
+			
+			System.out.println("Aux Queue Check... ");
+			pos = 0;
+			temp = AuxQueueStart;
+			while (temp!=wholeQueue.get(temp)) {
+				pos ++ ;
+				if (temp.equals(BLKPOS)) {
+					System.out.println("Position in the AUX LRU workingSet " + pos);
+					break;
+				}
+				temp = wholeQueue.get(temp);
+			}
+			
+		}
+		catch(Exception E) {
+			E.printStackTrace();
+		}
+	}
+	
+	
+	
+	
 	class BufferPinTest implements Runnable{
 		public void run() {
 			try {
@@ -33,6 +104,7 @@ public class BufferCache {
 						rs.getInt(1);
 					}
 				}
+				
 			}
 			catch(Exception E) {
 				E.printStackTrace();
@@ -43,7 +115,7 @@ public class BufferCache {
 	void checkWorkingSet() {
 
 
-		String lruChains= "select NXT_REPL,NXT_REPLAX,NXT_WRITE,NXT_WRITEAX,cold_hd from x$kcbwds where CNUM_SET>0";
+		String lruChains= "select NXT_REPL,NXT_REPLAX,NXT_WRITE,NXT_WRITEAX,cold_hd from x$kcbwds where CNUM_SET>1";
 		String BufferCache="select prv_repl,nxt_repl,tch,decode(state,0,'free',1,'xcur',2,'scur',3,'cr', 4,'read',5,'mrec',6,'irec',7,'write',8,'pi', 9,'memory',10,'mwrite',11,'donated', 12,'protected',  13,'securefile', 14,'siop',15,'recckpt', 16, 'flashfree',  17, 'flashcur', 18, 'flashna') STATE from x$bh";
 
 		try {
