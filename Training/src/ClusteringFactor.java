@@ -20,7 +20,7 @@ public class ClusteringFactor {
 				catch(Exception E) {
 					
 				}
-				SQL = "create table randomload(roll number, name varchar2(20), mark1 number, mark2 number, mark3 number)";
+				SQL = "create table randomload(roll number, name varchar2(20), mark1 number, mark2 number, mark3 number) tablespace users_masm PCTFREE 20 PCTUSED 80 storage ( FREELIST GROUPS 1   FREELISTS 1)";
 				stmt.execute(SQL);
 				SQL = "create index idx on randomload(roll)";
 				stmt.execute(SQL);
@@ -35,14 +35,14 @@ public class ClusteringFactor {
 			if (mode.equals("SINGLE")) {
 				ExecutorService asd = Executors.newCachedThreadPool();
 				for (int i = 0 ; i < a ; i++ ) {
-					asd.submit(new InsertNormal(10000000/a));
+					asd.submit(new InsertNormal(1000000/a));
 				}
 				asd.shutdown();
 			}
 			else if (mode.equals("BATCH")) {
 				ExecutorService asd = Executors.newCachedThreadPool();
 				for (int i = 0 ; i < a ; i++ ) {
-					asd.submit(new InsertBatch(10000000/a));
+					asd.submit(new InsertBatch(1000000/a));
 				}
 				asd.shutdown();
 			}
