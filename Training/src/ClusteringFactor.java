@@ -6,8 +6,6 @@ import java.util.concurrent.Executors;
 
 public class ClusteringFactor {
 	
-	
-	
 	void insertSession(String mode, int a) {
 		try {
 			try {
