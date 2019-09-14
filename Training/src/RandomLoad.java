@@ -10,7 +10,7 @@ public class RandomLoad {
 		try {
 			Connection oraCon = DBConnection.getOraConn();
 			Statement stmt = oraCon.createStatement();
-			try {
+			/*try {
 				String SQL = "drop table RandomLoad";
 				stmt.execute(SQL);
 			}
@@ -21,32 +21,37 @@ public class RandomLoad {
 			stmt.execute(SQL);
 			//SQL = "create index RandomLoad_idx on RandomLoad(roll) ";
 			//stmt.execute(SQL);
-			System.out.println("Created Tables and indexes, Starting Load");
+			System.out.println("Created Tables and indexes, Starting Load");*/
 			ExecutorService asd = Executors.newFixedThreadPool(400);
 			int i = 0;
-			while (i < 30) {
+			/*while (i < 30) {
 				asd.submit(new InsertLoad());
 				i++;
 			}
-			i = 0 ;
-			/*System.out.println("Loading Data... Sleepin for 10 seconds");
-			Thread.currentThread().sleep(10000);
+			i = 0 ;*/
+			System.out.println("Loading Data... Sleepin for 10 seconds");
+		//	Thread.currentThread().sleep(10000);
 			while (i < 5) {
 				asd.submit(new DeleteLoad());
 				asd.submit(new UpdateLoad());
 				i++;
-			}
+			} /*
 			while (i < 10) {
 				asd.submit(new SelectLoad());
 				i++;
 			}
 			*/
-			
+			Thread.currentThread().sleep(20000);
+			exit(0);
 			
 		}
 		catch(Exception E) {
 			E.printStackTrace();
 		}
+	}
+	private void exit(int i) {
+		// TODO Auto-generated method stub
+		
 	}
 	void PageTable() {
 		
@@ -61,9 +66,9 @@ public class RandomLoad {
 				while (i < 10000000) {
 					pstmt.setInt(1 , oraSequence.nextVal());
 					pstmt.setString(2, OraRandom.randomString(20));
-					pstmt.setInt(3, OraRandom.randomUniformInt(100));
-					pstmt.setInt(4, OraRandom.randomUniformInt(100));
-					pstmt.setInt(5, OraRandom.randomUniformInt(100));
+					pstmt.setInt(3, OraRandom.randomSkewInt(100));
+					pstmt.setInt(4,  OraRandom.randomSkewInt(100));
+					pstmt.setInt(5,  OraRandom.randomSkewInt(100));
 					
 					pstmt.addBatch();
 					if (i%100000 == 0) {
@@ -88,7 +93,7 @@ public class RandomLoad {
 				PreparedStatement pstmt = oraCon.prepareStatement("Update RandomLoad set name = ? where roll = ? ");
 				int i = 0;
 				while (i < 1000000) {
-					pstmt.setInt(2 , OraRandom.randomUniformInt(oraSequence.getval()));
+					pstmt.setInt(2 , OraRandom.randomUniformInt(125393593));
 					pstmt.setString(1, OraRandom.randomString(20));
 					pstmt.executeUpdate();
 					i++;
@@ -108,7 +113,7 @@ public class RandomLoad {
 				PreparedStatement pstmt = oraCon.prepareStatement("select mark2 from  RandomLoad where roll =?");
 				int i = 0;
 				while (i < 1000000) {
-					pstmt.setInt(1, OraRandom.randomUniformInt(oraSequence.getval()));
+					pstmt.setInt(1, OraRandom.randomUniformInt(125393593));
 					ResultSet rs = pstmt.executeQuery();
 					while(rs.next()) {
 						rs.getInt(1);
@@ -132,10 +137,10 @@ public class RandomLoad {
 			try {
 				System.out.println("Staring Delete Thread -->" + Thread.currentThread().getName());
 				Connection oraCon = DBConnection.getOraConn();
-				PreparedStatement pstmt = oraCon.prepareStatement("delete from HugePages where roll = ? ");
+				PreparedStatement pstmt = oraCon.prepareStatement("delete from RandomLoad where roll = ? ");
 				int i = 0;
 				while (i < 1000000) {
-					pstmt.setInt(1 , OraRandom.randomUniformInt(oraSequence.getval()));
+					pstmt.setInt(1 , OraRandom.randomUniformInt(125393593));
 					pstmt.executeUpdate();
 					i++;
 				}
