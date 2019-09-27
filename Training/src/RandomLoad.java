@@ -19,7 +19,7 @@ public class RandomLoad {
 			catch(Exception E) {
 				
 			}
-			String SQL = "  create table randomload (roll number primary key, name varchar2(20), mark1 number not null, mark2 number, mark3 number not null)  ";
+			String SQL = "  create table randomload (roll number primary key, name varchar2(3500), mark1 number not null, mark2 number, mark3 number not null)  ";
 			stmt.execute(SQL);
 
 			System.out.println("Created Tables and indexes, Starting Load");
@@ -31,18 +31,17 @@ public class RandomLoad {
 			}
 			i = 0 ;
 			System.out.println("Loading Data... Sleepin for 10 seconds");
-			Thread.currentThread().sleep(120000);
 			asd.shutdown();
-			/*
-			while (i < 10) {
-				asd.submit(new UpdateLoad());
-				i++;
+			while(!asd.isShutdown()) {
+				Thread.currentThread().sleep(1000);
 			}
+			asd.shutdownNow();
+			asd = Executors.newFixedThreadPool(30);
 			
-			while (i < 10) {
+			while (i < 30) {
 				asd.submit(new SelectLoad());
 				i++;
-			}*/
+			}
 			
 			
 		}
@@ -50,10 +49,7 @@ public class RandomLoad {
 			E.printStackTrace();
 		}
 	}
-	private void exit(int i) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 	void PageTable() {
 		
 	}
@@ -64,15 +60,15 @@ public class RandomLoad {
 				Connection oraCon = DBConnection.getOraConn();
 				PreparedStatement pstmt = oraCon.prepareStatement("insert into RandomLoad (roll, name,mark1,mark2,mark3) values (?,?,?,?,?)");
 				int i = 0;
-				while (i < 1000000) {
+				while (i < 2000000) {
 					pstmt.setInt(1 , oraSequence.nextVal());
-					pstmt.setString(2, OraRandom.randomString(20));
+					pstmt.setString(2, OraRandom.randomString(3500));
 					pstmt.setInt(3, OraRandom.randomSkewInt(100));
 					pstmt.setInt(4,  OraRandom.randomSkewInt(100));
 					pstmt.setInt(5,  OraRandom.randomSkewInt(500));
 					
 					pstmt.addBatch();
-					if (i%100000 == 0) {
+					if (i%10000 == 0) {
 						pstmt.executeBatch();
 						System.out.println("loaded " + oraSequence.getval());
 					}
@@ -131,11 +127,13 @@ public class RandomLoad {
 				while (rs.next()) {
 					maxvalue = rs.getInt(1);
 				}
-				PreparedStatement pstmt = oraCon.prepareStatement("select mark1 from  RandomLoad where roll =?");
+				PreparedStatement pstmt = oraCon.prepareStatement("select mark1 from  RandomLoad where roll >? and roll <?");
 
 				int i = 0;
 				while (i < 1000000) {
-					pstmt.setInt(1, OraRandom.randomUniformInt(maxvalue));
+					int l = OraRandom.randomUniformInt(maxvalue);
+					pstmt.setInt(1, l);
+					pstmt.setInt(2, l+20000);
 					 rs = pstmt.executeQuery();
 					while(rs.next()) {
 						rs.getInt(1);

@@ -5,7 +5,7 @@ class DBConnection {
         static Connection getOraConn() {
                 try {
                         Class.forName("oracle.jdbc.driver.OracleDriver");
-                        return DriverManager.getConnection("jdbc:oracle:thin:@10.10.1.20:1521:noncdb","vishnu","oracle");
+                        return DriverManager.getConnection("jdbc:oracle:thin:@192.168.0.20:1521:noncdb","vishnu","oracle");
                 }
                 catch(Exception E) {
                         if (E.toString().contains("ClassNotFoundException")) {
