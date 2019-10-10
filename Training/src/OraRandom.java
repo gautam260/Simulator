@@ -21,4 +21,7 @@ public class OraRandom {
 	    }
 	    return buffer.toString();
 	}
+	static int randomInt(int a) {
+		return Math.abs(new Random().nextInt()%a) + a ;
+	}
 }
