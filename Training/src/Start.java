@@ -6,7 +6,7 @@ public class Start {
 		 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 		   LocalDateTime now = LocalDateTime.now();  
 		   System.out.println(dtf.format(now));
-		   ClobData a = new ClobData();
-		a.updateLoad();
+		RandomLoad a = new RandomLoad();
+		a.selectLoad();
 	}
 }

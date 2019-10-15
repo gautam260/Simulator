@@ -12,6 +12,20 @@ public class ClobData {
 	void run() {
 		
 	}
+	void selectLoad() {
+		try {
+			ExecutorService asd = Executors.newFixedThreadPool(30);
+			int i = 0;
+			while (i < 10) {
+				asd.submit(new SelectLoad());
+				i++;
+			}
+			
+		}
+		catch(Exception E) {
+			E.printStackTrace();
+		}
+	}
 	void updateLoad() {
 		try {
 			ExecutorService asd = Executors.newFixedThreadPool(30);
@@ -63,7 +77,7 @@ public class ClobData {
 					pstmt.setInt(1, oraSequence.nextVal());
 					pstmt.setString(2, OraRandom.randomString(20));
 					Clob temp = oraCon.createClob();
-					temp.setString(1, OraRandom.randomString(OraRandom.randomInt(351201)));
+					temp.setString(1, OraRandom.randomString(OraRandom.randomInt(35120010)));
 					pstmt.setClob(3, temp);
 					pstmt.executeUpdate();
 					i++;
@@ -90,7 +104,6 @@ public class ClobData {
 				int i = 0 ;
 				while (i < 1000000) {
 					pstmt.setInt(1, OraRandom.randomUniformInt(maxvalue));
-					Clob temp = oraCon.createClob();
 					 rs = pstmt.executeQuery();
 					while (rs.next()) {
 						rs.getClob(1);
