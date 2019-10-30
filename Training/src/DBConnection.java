@@ -2,6 +2,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 class DBConnection {
+	
+	
+		
         static Connection getOraConn() {
                 try {
                         Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -29,4 +32,18 @@ class DBConnection {
                  return null;
          	}
         }
+        static Connection oraPostConn() {
+
+	        try {
+	        
+	        return DriverManager.getConnection("jdbc:postgresql://192.168.0.11:5432/vishnu", "vishnu", "oracle");
+	        
+
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return  null;
+	        }
+
+
+		}
 }

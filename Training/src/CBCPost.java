@@ -8,14 +8,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class CBC {
+public class CBCPost {
 
 	
 	
 	
 	void createTable() {
 		try {
-			Connection oraCon = DBConnection.getOraConn();
+			Connection oraCon = DBConnection.oraPostConn();
 			Statement stmt = oraCon.createStatement();
 			try {
 				String SQL = "drop table RandomLoad";
@@ -24,7 +24,7 @@ public class CBC {
 			catch(Exception E) {
 				System.out.println("Drop table failed or table doesnt exist");
 			}
-			String SQL = "  create table randomload (roll number primary key, name varchar2(20),  mark1 number not null, mark2 number, mark3 number not null) storage (initial 64m) ";
+			String SQL = "  create table randomload(roll numeric primary key with (fillfactor=90), name varchar(20), mark1 numeric, mark2 numeric, mark3 numeric) with (fillfactor=90)";
 			stmt.execute(SQL);
 			System.out.println("Created Tables (ROLL PK) , Starting Load");	
 		}
@@ -62,7 +62,7 @@ public class CBC {
 		public void run() {
 			try {
 				System.out.println("Staring Insert Thread -->" + Thread.currentThread().getName());
-				Connection oraCon = DBConnection.getOraConn();
+				Connection oraCon = DBConnection.oraPostConn();
 				PreparedStatement pstmt = oraCon.prepareStatement("insert into RandomLoad (roll, name, mark1,mark2,mark3) values (?,?,?,?,?)");
 				int i = 0;
 				while (i < 1250000) {
@@ -117,7 +117,7 @@ public class CBC {
 
 			try {
 				System.out.println("Staring Select  Thread -->" + Thread.currentThread().getName());
-				Connection oraCon = DBConnection.getOraConn();
+				Connection oraCon = DBConnection.oraPostConn();
 				String SQL = "select max(roll) from randomload";
 				Statement stmt = oraCon.createStatement();
 				ResultSet rs = stmt.executeQuery(SQL);
@@ -175,7 +175,7 @@ public class CBC {
 
 			try {
 				System.out.println("Staring Select  Thread -->" + Thread.currentThread().getName());
-				Connection oraCon = DBConnection.getOraConn();
+				Connection oraCon = DBConnection.oraPostConn();
 				String SQL = "select max(roll) from randomload";
 				Statement stmt = oraCon.createStatement();
 				ResultSet rs = stmt.executeQuery(SQL);
@@ -210,7 +210,7 @@ public class CBC {
 
 			try {
 				System.out.println("Staring Upload  Thread -->" + Thread.currentThread().getName());
-				Connection oraCon = DBConnection.getOraConn();
+				Connection oraCon = DBConnection.oraPostConn();
 				
 				int randomValue = SingleStmt1Updval;
 				int i = 0;
