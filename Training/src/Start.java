@@ -7,6 +7,9 @@ public class Start {
 		   LocalDateTime now = LocalDateTime.now();  
 		   System.out.println(dtf.format(now));
 		RandomLoad a = new RandomLoad();
-		a.selectLoad();
+		a.createTable();
+		
+		
+		a.loadTable();
 	}
 }

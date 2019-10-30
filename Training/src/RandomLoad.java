@@ -11,7 +11,7 @@ public class RandomLoad {
 	void loadTable() throws InterruptedException {
 		ExecutorService asd = Executors.newFixedThreadPool(30);
 		int i = 0;
-		while (i < 30) {
+		while (i < 20) {
 			asd.submit(new InsertLoad());
 			i++;
 		}
@@ -63,7 +63,7 @@ public class RandomLoad {
 			catch(Exception E) {
 				
 			}
-			String SQL = "  create table randomload (roll number primary key, name varchar2(20),  mark1 number not null, mark2 number, mark3 number not null)  ";
+			String SQL = "  create table randomload (roll number primary key, name varchar2(20),  mark1 number not null, mark2 number, mark3 number not null) storage (initial 64m) ";
 			stmt.execute(SQL);
 
 			System.out.println("Created Tables and indexes, Starting Load");
@@ -86,7 +86,7 @@ public class RandomLoad {
 				Connection oraCon = DBConnection.getOraConn();
 				PreparedStatement pstmt = oraCon.prepareStatement("insert into RandomLoad (roll, name, mark1,mark2,mark3) values (?,?,?,?,?)");
 				int i = 0;
-				while (i < 2000000) {
+				while (i < 30099900) {
 					pstmt.setInt(1 , oraSequence.nextVal());
 					pstmt.setString(2, OraRandom.randomString(20));
 					pstmt.setInt(3, OraRandom.randomSkewInt(100));
