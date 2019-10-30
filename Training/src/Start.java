@@ -6,10 +6,8 @@ public class Start {
 		 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 		   LocalDateTime now = LocalDateTime.now();  
 		   System.out.println(dtf.format(now));
-		RandomLoad a = new RandomLoad();
+		CBC a = new CBC();
 		a.createTable();
-		
-		
 		a.loadTable();
 	}
 }
