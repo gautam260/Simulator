@@ -6,8 +6,7 @@ public class Start {
 		 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 		   LocalDateTime now = LocalDateTime.now();  
 		   System.out.println(dtf.format(now));
-		CBCPost a = new CBCPost();
-		a.createTable();
-		a.loadTable();
+		SelectLoad a = new SelectLoad();
+		a.selectLoad();
 	}
 }

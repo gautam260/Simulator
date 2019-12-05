@@ -11,7 +11,7 @@ public class RandomLoad {
 	void loadTable() throws InterruptedException {
 		ExecutorService asd = Executors.newFixedThreadPool(30);
 		int i = 0;
-		while (i < 20) {
+		while (i < 10) {
 			asd.submit(new InsertLoad());
 			i++;
 		}
@@ -40,9 +40,9 @@ public class RandomLoad {
 		
 	}
 	void selectLoad() {
-		ExecutorService asd = Executors.newFixedThreadPool(30);
+		ExecutorService asd = Executors.newFixedThreadPool(50);
 		int i = 0;
-		while (i < 1) {
+		while (i < 50) {
 			asd.submit(new SelectLoad());
 			i++;
 		}
@@ -63,13 +63,11 @@ public class RandomLoad {
 			catch(Exception E) {
 				
 			}
-			String SQL = "  create table randomload (roll number primary key, name varchar2(20),  mark1 number not null, mark2 number, mark3 number not null) storage (initial 64m) ";
+			String SQL = "  create table randomload (roll number , name varchar2(40),  mark1 number , mark2 number, mark3 number, mark4 number, mark5 number, mark6 number, primary key (roll,name)) ";
 			stmt.execute(SQL);
-
+			//SQL = " create index idx on randomload(name)";
+			//stmt.execute(SQL);
 			System.out.println("Created Tables and indexes, Starting Load");
-			
-		
-			
 		}
 		catch(Exception E) {
 			E.printStackTrace();
@@ -84,17 +82,31 @@ public class RandomLoad {
 			try {
 				System.out.println("Staring Insert Thread -->" + Thread.currentThread().getName());
 				Connection oraCon = DBConnection.getOraConn();
-				PreparedStatement pstmt = oraCon.prepareStatement("insert into RandomLoad (roll, name, mark1,mark2,mark3) values (?,?,?,?,?)");
+				PreparedStatement pstmt = oraCon.prepareStatement("insert into RandomLoad (roll, name, mark1,mark2,mark3,mark4, mark5, mark6) values (ora.nextval,?,?,?,?,?,?,?)");
 				int i = 0;
 				while (i < 30099900) {
-					pstmt.setInt(1 , oraSequence.nextVal());
-					pstmt.setString(2, OraRandom.randomString(20));
+				/*	pstmt.setInt(1 , oraSequence.nextVal());
+					pstmt.setString(2, OraRandom.randomString(40));
 					pstmt.setInt(3, OraRandom.randomSkewInt(100));
-					pstmt.setInt(4,  OraRandom.randomSkewInt(100));
-					pstmt.setInt(5,  OraRandom.randomSkewInt(500));
+					pstmt.setInt(4,  OraRandom.randomSkewInt(200));
+					pstmt.setInt(5,  OraRandom.randomSkewInt(400));
+					pstmt.setInt(6, OraRandom.randomSkewInt(800));
+					pstmt.setInt(7,  OraRandom.randomUniformInt(1600));
+					pstmt.setInt(8,  OraRandom.randomUniformInt(3200)); */
+					
+					pstmt.setString(1, OraRandom.randomString(40));
+					pstmt.setInt(2, OraRandom.randomSkewInt(100));
+					pstmt.setInt(3,  OraRandom.randomSkewInt(200));
+					pstmt.setInt(4,  OraRandom.randomSkewInt(400));
+					pstmt.setInt(5, OraRandom.randomSkewInt(800));
+					pstmt.setInt(6,  OraRandom.randomUniformInt(1600));
+					pstmt.setInt(7,  OraRandom.randomUniformInt(3200));
+					//pstmt.execute();
+					
+					
 					
 					pstmt.addBatch();
-					if (i%10000 == 0) {
+					if (i%10 == 0) {
 						pstmt.executeBatch();
 						System.out.println("loaded " + oraSequence.getval());
 					}
@@ -189,16 +201,18 @@ public class RandomLoad {
 				PreparedStatement pstmt = oraCon.prepareStatement("select mark1 from  RandomLoad where roll =?");
 
 				int i = 0;
-				while (i < 100) {
-					int l = OraRandom.randomUniformInt(maxvalue);
-					pstmt.setInt(1, l);
-					 rs = pstmt.executeQuery();
-					while(rs.next()) {
-						rs.getInt(1);
+				while (true) {
+					while (i < 1000000) {
+						int l = OraRandom.randomUniformInt(maxvalue);
+						pstmt.setInt(1, l);
+						 rs = pstmt.executeQuery();
+						while(rs.next()) {
+							rs.getInt(1);
+						}
+						i++;
 					}
-					i++;
 				}
-				pstmt.close();
+	
 			}
 			catch(Exception E) {
 				E.printStackTrace();
