@@ -11,7 +11,7 @@ public class SelectLoad {
 	void selectLoad() {
 		ExecutorService asd = Executors.newFixedThreadPool(50);
 		int i = 0;
-		while (i < 50) {
+		while (i < 10) {
 			asd.submit(new Load());
 			i++;
 		}
@@ -23,16 +23,18 @@ public class SelectLoad {
 			try {
 				
 				Connection oraCon = DBConnection.getOraConn();
-				PreparedStatement pstmt = oraCon.prepareStatement("select ora.nextval from  RandomLoad");
+				PreparedStatement pstmt = oraCon.prepareStatement("select * from students2 where department_id=400");
+				pstmt.setFetchSize(500);
 				ResultSet rs;
 				int i = 0;
-				while (i < 1000000) {
+				while (i < 100) {
 						rs = pstmt.executeQuery();
 						while(rs.next()) {
-							System.out.println(Thread.currentThread().getName() + " ---- " + rs.getInt(1));
+							
 						}
 						i++;
 				}
+				System.out.println("Complete");
 	
 			}
 			catch(Exception E) {
