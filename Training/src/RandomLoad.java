@@ -63,9 +63,10 @@ public class RandomLoad {
 			catch(Exception E) {
 				
 			}
-			String SQL = "  create table students(student_id number, dept_id number, name varchar2(30), sub_id number, mark1 number, mark2 number, mark3 number, mark4 number, mark5 number, mark6 number, mark7 number, mark8 number)";
+			String SQL = "  create table students(student_id number, dept_id number, name varchar2(30), sub_id number, day date, mark1 number, mark2 number, mark3 number, mark4 number)";
 			stmt.execute(SQL);
-		
+			//SQL = "create index mark8_idx on students(mark8)";
+			//stmt.execute(SQL);
 			System.out.println("Created Tables and indexes, Starting Load");
 		}
 		catch(Exception E) {
@@ -81,21 +82,18 @@ public class RandomLoad {
 			try {
 				System.out.println("Staring Insert Thread -->" + Thread.currentThread().getName());
 				Connection oraCon = DBConnection.getOraConn();
-				PreparedStatement pstmt = oraCon.prepareStatement("insert into students (student_id, dept_id, name, sub_id, mark1, mark2, mark3, mark4, mark5, mark6, mark7, mark8) values (?,?,?,?,?,?,?,?,?,?,?,?)");
+				PreparedStatement pstmt = oraCon.prepareStatement("insert into students (student_id, dept_id, name, sub_id,  day, mark1, mark2, mark3, mark4) values (?,?,?,?,to_date(trunc(dbms_random.value(2458485,2458849)),'J'),?,?,?,?)");
 				int i = 0;
 				while (i < 30099900) {
 					pstmt.setInt(1 , oraSequence.nextVal());
 					pstmt.setInt(2, OraRandom.randomUniformInt(100));
 					pstmt.setString(3, OraRandom.randomString(30));
-					pstmt.setInt(4, OraRandom.randomUniformInt(100));
+					pstmt.setInt(4, OraRandom.randomUniformInt(200));
 					pstmt.setInt(5,  OraRandom.randomSkewInt(800));
 					pstmt.setInt(6,  OraRandom.randomSkewInt(1600));
-					pstmt.setInt(7, OraRandom.randomUniformInt(400));
-					pstmt.setInt(8,  OraRandom.randomUniformInt(800));
-					pstmt.setInt(9,  OraRandom.randomUniformInt(1600)); 
-					pstmt.setInt(10,  OraRandom.randomUniformInt(3200)); 
-					pstmt.setInt(11,  OraRandom.randomUniformInt(6400)); 
-					pstmt.setInt(12,  OraRandom.randomUniformInt(12800)); 
+					pstmt.setInt(7, OraRandom.randomUniformInt(64000));
+					pstmt.setInt(8,  OraRandom.randomUniformInt(120000));
+				
 					
 					
 					pstmt.addBatch();
