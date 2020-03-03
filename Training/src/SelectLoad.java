@@ -23,12 +23,12 @@ public class SelectLoad {
 			try {
 				
 				Connection oraCon = DBConnection.getOraConn();
-				PreparedStatement pstmt = oraCon.prepareStatement("select sum(mark1) from students where mark2=?");
+				PreparedStatement pstmt = oraCon.prepareStatement("select * from students where name is null or marks = 100");
 				pstmt.setFetchSize(500);
 				ResultSet rs;
 				int i = 0;
 				while (i < 100000) {
-					pstmt.setInt(1, OraRandom.randomUniformInt(1600));
+				//	pstmt.setInt(1, OraRandom.randomUniformInt(1600));
 						rs = pstmt.executeQuery();
 						while(rs.next()) {
 							

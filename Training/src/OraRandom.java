@@ -25,4 +25,4 @@ public class OraRandom {
 		return Math.abs(new Random().nextInt()%a) + a ;
 	}
 }
-//random Date: to_date(trunc(dbms_random.value(2458485,2458849))
+//random Date: to_date(trunc(dbms_random.value(2458485,2458849)),'J')
